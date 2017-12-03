@@ -4,6 +4,7 @@ import java.util.List;
 public class Supplier extends Agent {
 
     private List<Ticket> tickets;
+    /*private List<Ticket> ticketsSuggested*/
     private List<Negociator> negociators;
     private Negociator negociator; //todo remove ??
     private Negociation negociation;
@@ -11,7 +12,7 @@ public class Supplier extends Agent {
     public Supplier(String id, List<Ticket> tickets) {
         super(id);
         this.tickets = tickets;
-        this.negociators = new ArrayList<Negociator>();
+        this.negociators = new ArrayList<>();
     }
 
     public Supplier(String id, List<Ticket> tickets, Negociator negociator) {
@@ -60,7 +61,7 @@ public class Supplier extends Agent {
                 } else {
 
                     Ticket bestTicket = getBestTicket(msg.getTicket());
-                    addSuggestionFor(negociator, bestTicket);
+                    negociation.addSuggestion(bestTicket);
                     (new Message(this, negociator,bestTicket, false)).send();
 
                 }
@@ -68,14 +69,20 @@ public class Supplier extends Agent {
 
         }
     }
+
     // récupère le meilleur ticket n'ayant pas été suggéré
     public Ticket getBestTicket(Ticket targetTicket){
+
+        List<Ticket> suggestedTickets = negociation.getSuggestedTickets();
         Ticket bestTicket = null;
         int bestDiff = Integer.MAX_VALUE;
         int diff;
 
         for (Ticket t : tickets){
-            if (suggestedTickets.get(negociator) == null || !suggestedTickets.get(negociator).contains(t)){
+
+            //Si on n'a proposé aucun ticket OU qu'on n'a pas encore proposé le ticket courant
+            if (suggestedTickets.size() == 0 || ! suggestedTickets.contains(t)){
+
                 diff = ticketDifferences(t, targetTicket);
                 if (diff < bestDiff){
                     bestDiff = diff;
@@ -107,4 +114,11 @@ public class Supplier extends Agent {
         }
         return diff;
     }
+
+    /**********************************
+     *
+     * PRIVATES
+     *
+     ******************/
+
 }

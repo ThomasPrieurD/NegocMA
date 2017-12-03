@@ -47,7 +47,10 @@ public class Ticket {
     }
 
     public String print(){
-        return "[ date: "+ travelDate + " | from: " + departureLocation + " | to: "+ arrivalLocation + " | cost: " + cost + " ]";
+        return "[ date: "+ travelDate +
+                " | from: " + departureLocation +
+                " | to: "+ arrivalLocation +
+                " | cost: " + cost + " ]";
     }
 
     public boolean equals(Ticket t) {

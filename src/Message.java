@@ -34,7 +34,9 @@ public class Message {
     }
 
     public void send() {
-        System.out.println(sender.getIdAgent() + " send to " + receiver.getIdAgent() + " : " + ticket.print());
+        System.out.println(sender.getIdAgent() +
+                " send to " + receiver.getIdAgent() + " : " + ticket.print() +
+                " for purchasing ? " + isCommercialPurchase);
         receiver.sendMessage(this);
     }
 }

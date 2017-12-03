@@ -2,6 +2,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/***
+ * A Negociation only concern a supplier with a negociator
+ */
 public class Negociation {
 
     private Negociator negociator;
@@ -24,7 +27,42 @@ public class Negociation {
         supplier.start();
     }
 
-    //todo remove ?
+    public Negociator getNegociator() {
+        return negociator;
+    }
+
+    public void setNegociator(Negociator negociator) {
+        this.negociator = negociator;
+    }
+
+    public Supplier getSupplier() {
+        return supplier;
+    }
+
+    public void setSupplier(Supplier supplier) {
+        this.supplier = supplier;
+    }
+
+    public List<Message> getMessageHistory() {
+        return messageHistory;
+    }
+
+    public void setMessageHistory(List<Message> messageHistory) {
+        this.messageHistory = messageHistory;
+    }
+
+    public Long getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Long startTime) {
+        this.startTime = startTime;
+    }
+
+    public List<Ticket> getSuggestedTickets() {
+        return suggestedTickets;
+    }
+
     public void addSuggestion(Ticket t) {
         suggestedTickets.add(t);
     }
