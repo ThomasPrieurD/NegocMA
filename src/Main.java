@@ -5,19 +5,38 @@ public class Main {
 
     public static void main(String[] args){
 
-        ArrayList<Ticket> tickets = new ArrayList<>();
-        Ticket tick1 = new Ticket(new Date(2017,12,24),"Montréal", "Grenoble",450,"AirCanada");
-        tickets.add(tick1);
-        Ticket tick2 = new Ticket(new Date(2017,11,24),"Montréal", "Grenoble",250,"AirCanada");
-        tickets.add(tick2);
-        Ticket tick3 = new Ticket(new Date(2017,12,24),"Montréal", "Lyon",750,"AirCanada");
-        tickets.add(tick3);
+        ArrayList<Ticket> ticketList1 = new ArrayList<>();
+        ArrayList<Ticket> ticketList2 = new ArrayList<>();
 
-        Supplier supp = new Supplier("Sup1", tickets);
-        Negociator nego = new Negociator("Neg1", supp, tick3);
+        Ticket t_MG_45_251217 = new Ticket(new Date(2017,12,24),"Montréal", "Grenoble",450,"Air Canada");
+        Ticket t_MG_25_241117 = new Ticket(new Date(2017,11,24),"Montréal", "Grenoble",250,"Air Canada");
+        Ticket t_ML_70_241217 = new Ticket(new Date(2017,12,24),"Montréal", "Lyon",700,"Air Canada");
+        Ticket t_ML_75_241217 = new Ticket(new Date(2017,12,24),"Montréal", "Lyon",750,"Air Canada");
+        Ticket t_ML_58_241217 = new Ticket(new Date(2017,12,24),"Montréal", "Lyon",580,"Swiss Airline");
+        Ticket t_ML_55_221217 = new Ticket(new Date(2017,12,22),"Montréal", "Lyon",550,"Air Canada");
+        Ticket t_MT_60_211217 = new Ticket(new Date(2017,12,21),"Montréal", "Tokyo",600,"Swiss Airline");
+        Ticket t_PL_20_221217 = new Ticket(new Date(2017,12,22),"Paris", "Lyon",200,"Air France");
+        Ticket t_GL_80_251217 = new Ticket(new Date(2017,12,25),"Grenoble", "Lyon",800,"Air France");
+        Ticket t_GL_75_251217 = new Ticket(new Date(2017,12,25),"Grenoble", "Lyon",750,"Air France");
+
+        ticketList1.add(t_MG_45_251217);
+        ticketList1.add(t_ML_70_241217);
+        ticketList1.add(t_ML_58_241217);
+        ticketList1.add(t_MT_60_211217);
+        ticketList1.add(t_GL_80_251217);
+
+        ticketList2.add(t_MG_25_241117);
+        ticketList2.add(t_ML_75_241217);
+        ticketList2.add(t_ML_55_221217);
+        ticketList2.add(t_PL_20_221217);
+        ticketList2.add(t_GL_75_251217);
+
+        Supplier supp = new Supplier("Sup_1", ticketList1);
+        Supplier supp2 = new Supplier("Sup_2", ticketList2);
+
+        Negociator nego = new Negociator("Neg_1", supp,
+                new Ticket(new Date(2017,12,24),"Montréal", "Lyon",550,"Swiss Airline"));
 
         nego.start();
-
-
     }
 }

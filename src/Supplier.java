@@ -4,7 +4,6 @@ import java.util.List;
 public class Supplier extends Agent {
 
     private List<Ticket> tickets;
-    /*private List<Ticket> ticketsSuggested*/
     private List<Negociator> negociators;
     private Negociator negociator; //todo remove ??
     private Negociation negociation;
@@ -15,19 +14,8 @@ public class Supplier extends Agent {
         this.negociators = new ArrayList<>();
     }
 
-    public Supplier(String id, List<Ticket> tickets, Negociator negociator) {
-        super(id);
-        this.tickets = tickets;
-        this.negociator = negociator;
-        this.negociators = new ArrayList<Negociator>();
-    }
-
-    public void startNegociation(Negociation n) {
-        negociation = n;
-    }
-
     public void run(){
-        Message msg;
+
         while(true){
 
             try {
@@ -36,10 +24,10 @@ public class Supplier extends Agent {
                 e.printStackTrace();
             }
 
-            msg = null;
+            Message msg = null;
+
             if (messages.size() > 0){
                 msg = messages.remove(0);
-                System.out.println("Sup read message from : " + msg.getSender().getIdAgent());
             }
 
             if (msg != null){
@@ -53,7 +41,7 @@ public class Supplier extends Agent {
                     if(msg.getTicket().isSold()) {
                         //retourner erreur
                     } else {
-                        System.out.println(msg.getTicket().print() + " IS SOLD");
+                        System.out.println(msg.getTicket().toString() + " IS SOLD");
                         msg.getTicket().sold();
                         (new Message(this, negociator, msg.getTicket(), true)).send();
                         break;
@@ -62,15 +50,17 @@ public class Supplier extends Agent {
 
                     Ticket bestTicket = getBestTicket(msg.getTicket());
                     negociation.addSuggestion(bestTicket);
-                    (new Message(this, negociator,bestTicket, false)).send();
-
                 }
             }
 
         }
     }
 
-    // récupère le meilleur ticket n'ayant pas été suggéré
+    /***
+     * Get the best ticket matching the targetTicket
+     * @param targetTicket
+     * @return
+     */
     public Ticket getBestTicket(Ticket targetTicket){
 
         List<Ticket> suggestedTickets = negociation.getSuggestedTickets();
@@ -80,39 +70,47 @@ public class Supplier extends Agent {
 
         for (Ticket t : tickets){
 
-            //Si on n'a proposé aucun ticket OU qu'on n'a pas encore proposé le ticket courant
-            if (suggestedTickets.size() == 0 || ! suggestedTickets.contains(t)){
+            //Si le ticket correspond en terme de lieux
+            if(t.getArrivalLocation().equals(targetTicket.getArrivalLocation())
+                    && t.getDepartureLocation().equals(targetTicket.getDepartureLocation())) {
 
-                diff = ticketDifferences(t, targetTicket);
-                if (diff < bestDiff){
-                    bestDiff = diff;
-                    bestTicket = t;
+                //Si on n'a proposé aucun ticket OU qu'on n'a pas encore proposé le ticket courant
+                if (suggestedTickets.size() == 0 || !suggestedTickets.contains(t)) {
+
+                    diff = ticketDifferences(t, targetTicket);
+
+                    if (diff < bestDiff) {
+                        bestDiff = diff;
+                        bestTicket = t;
+                    }
                 }
             }
         }
         return bestTicket;
     }
 
-    //renvoie le nombre de différences entre 2 tickets
+    /***
+     * Return a value to indicate how different a ticket is from another one.
+     * Plus on s'approche de 0 plus les tickets sont identiques. Plus on s'éloigne, plus ils sont différents.
+     * @param t
+     * @param targetTicket
+     * @return
+     */
     public int ticketDifferences(Ticket t, Ticket targetTicket){
         int diff = 0;
         if (t.getTravelDate() != targetTicket.getTravelDate()){
             diff ++;
         }
-        if (t.getDepartureLocation() != targetTicket.getDepartureLocation()){
-            diff += 5;
-        }
-        if (t.getArrivalLocation() != targetTicket.getArrivalLocation()){
-            diff += 5;
-        }
         if (t.getCompany() != targetTicket.getCompany()){
             diff ++;
         }
-        //diférence si prix ticket Four >> prix ticket Négo
-        if (t.getCost() > 1.2 * targetTicket.getCost()){
-            diff += 0.5;
-        }
+        //On propose toujours le ticket le plus cher en premier !
+        diff += (targetTicket.getCost() - t.getCost());
         return diff;
+    }
+
+    public void startNegociation(Negociation n) {
+        negociation = n;
     }
 
     /**********************************

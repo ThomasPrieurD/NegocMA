@@ -5,9 +5,9 @@ public class Ticket {
     private Date travelDate;
     private String departureLocation;
     private String arrivalLocation;
+    private String company;
     private double cost;
     private boolean isSold;
-    private String company;
 
     public Ticket(Date travelDate, String departureLocation, String arrivalLocation, double cost, String company) {
         this.travelDate = travelDate;
@@ -42,17 +42,26 @@ public class Ticket {
         return cost;
     }
 
+    public void setCost(double newCost) {
+        cost = newCost;
+    }
+
     public String getCompany() {
         return company;
     }
 
-    public String print(){
+    public String toString(){
         return "[ date: "+ travelDate +
                 " | from: " + departureLocation +
                 " | to: "+ arrivalLocation +
                 " | cost: " + cost + " ]";
     }
 
+    /***
+     * Check if the current ticket is the same as t
+     * @param t
+     * @return
+     */
     public boolean equals(Ticket t) {
         return getTravelDate().equals(t.getTravelDate())
                 && getDepartureLocation().equals(t.getDepartureLocation())

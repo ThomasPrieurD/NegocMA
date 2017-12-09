@@ -7,6 +7,7 @@ public class Message {
     private Agent receiver;
     private Ticket ticket;
     private boolean isCommercialPurchase;
+    private boolean isRefusingToContinue;
 
 
     public Message(Agent sender, Agent receiver, Ticket ticket, boolean isCommercialOffer) {
@@ -14,11 +15,16 @@ public class Message {
         this.receiver = receiver;
         this.ticket = ticket;
         this.isCommercialPurchase = isCommercialOffer;
+        this.isRefusingToContinue = false;
     }
 
 
-    public Agent getReceiver() {
-        return receiver;
+    public boolean isRefusingToContinue() {
+        return isRefusingToContinue;
+    }
+
+    public void refuseToContinue() {
+        isRefusingToContinue = true;
     }
 
     public Agent getSender() {
@@ -34,9 +40,12 @@ public class Message {
     }
 
     public void send() {
-        System.out.println(sender.getIdAgent() +
-                " send to " + receiver.getIdAgent() + " : " + ticket.print() +
-                " for purchasing ? " + isCommercialPurchase);
+
+        if(! isRefusingToContinue) {
+            System.out.println(sender.getIdAgent() +
+                    " to " + receiver.getIdAgent() + " : " + ticket.toString() +
+                    " for purchasing ? " + isCommercialPurchase);
+        }
         receiver.sendMessage(this);
     }
 }

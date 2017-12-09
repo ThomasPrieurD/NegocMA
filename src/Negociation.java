@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /***
@@ -7,63 +6,78 @@ import java.util.List;
  */
 public class Negociation {
 
+    private final int NB_MAX_PROPOSITIONS = 3;
+
     private Negociator negociator;
     private Supplier supplier;
+
     private List<Message> messageHistory;
-    private Long startTime;
     private List<Ticket> suggestedTickets;
+    private int nbSuggestions;
 
     public Negociation(Negociator n, Supplier s) {
+
+        System.out.println("------------------------------------------------------------------");
+        System.out.println(n.getIdAgent() + " start a negociation with " + s.getIdAgent());
+
         negociator = n;
         supplier = s;
+        nbSuggestions = 0;
         messageHistory = new ArrayList<>();
-        startTime = System.currentTimeMillis();
         suggestedTickets = new ArrayList<>();
 
-        Message m = new Message(negociator, supplier, negociator.getTargetTicket(), false);
-        m.send();
-        messageHistory.add(m);
+        sendNewPropositionFromNegToSup();
 
+        supplier.startNegociation(this);
         supplier.start();
-    }
-
-    public Negociator getNegociator() {
-        return negociator;
-    }
-
-    public void setNegociator(Negociator negociator) {
-        this.negociator = negociator;
-    }
-
-    public Supplier getSupplier() {
-        return supplier;
-    }
-
-    public void setSupplier(Supplier supplier) {
-        this.supplier = supplier;
-    }
-
-    public List<Message> getMessageHistory() {
-        return messageHistory;
-    }
-
-    public void setMessageHistory(List<Message> messageHistory) {
-        this.messageHistory = messageHistory;
-    }
-
-    public Long getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(Long startTime) {
-        this.startTime = startTime;
     }
 
     public List<Ticket> getSuggestedTickets() {
         return suggestedTickets;
     }
 
+    /***
+     * Add a suggested Ticket from the supplier
+     * @param t
+     */
     public void addSuggestion(Ticket t) {
-        suggestedTickets.add(t);
+
+        if(t == null) {
+            Message m = (new Message(supplier, negociator, t, false));
+            m.refuseToContinue();
+            m.send();
+
+        } else {
+            suggestedTickets.add(t);
+            nbSuggestions++;
+            (new Message(supplier, negociator, t, false)).send();
+        }
+    }
+
+    /***
+     * Stop the negociation
+     */
+    public void stop() {
+        System.out.println("Negociation between "
+                + negociator.getIdAgent() + " and "
+                + supplier.getIdAgent() + " is over !");
+        System.out.println("------------------------------------------------------------------");
+    }
+
+    /***
+     * Send a new desire to the supplier
+     */
+    public void sendNewPropositionFromNegToSup() {
+        Message m = new Message(negociator, supplier, negociator.getTargetTicket(), false);
+        m.send();
+        messageHistory.add(m);
+    }
+
+    /***
+     * Check if the negociation can continue or not
+     * @return
+     */
+    public boolean isRunningOutOfTime() {
+        return nbSuggestions >= NB_MAX_PROPOSITIONS;
     }
 }

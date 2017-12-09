@@ -1,13 +1,17 @@
 public class Negociator extends Agent {
 
+    private final double PRICE_AUGMENTATION_COEF = 0.25;
+
     //private List<Supplier> suppliers;
     private Supplier supplier;
     private Ticket targetTicket;
+    private double maxCost;
 
     public Negociator(String id, Supplier supplier, Ticket targetTicket) {
         super(id);
         this.supplier = supplier;
         this.targetTicket = targetTicket;
+        this.maxCost = 1.1 * targetTicket.getCost();
     }
 
     public Ticket getTargetTicket() {
@@ -17,15 +21,13 @@ public class Negociator extends Agent {
     public void run(){
 
         //for each supplier
+        //Demande à chaque fournisseur qui possède le bon billet
         Negociation negociation = new Negociation(this, supplier);
-        supplier.startNegociation(negociation);
-
-        //supplier.start();
-        Message msg;
 
         while(true) {
 
-            msg = null;
+            Message msg = null;
+
             if (messages.size() > 0){
                 msg = messages.remove(0);
             }
@@ -33,19 +35,24 @@ public class Negociator extends Agent {
             if (msg != null){
 
                 Ticket suggestedTicket = msg.getTicket();
-                negociation.addSuggestion(suggestedTicket);
 
-                if(msg.isCommercialPurchase()) {
-                    //supplier.stop();
-                    System.out.println("\n\nEND OF PROGRAM");
+                if(msg.isRefusingToContinue() || msg.isCommercialPurchase() || negociation.isRunningOutOfTime()) {
+                    //stop all negociations ???
+                    negociation.stop();
                     break;
                 }
 
-                //Si la suggestion est parfaite, on termine la négo et on achète
-                if(suggestedTicket.equals(targetTicket)) {
+                if(suggestedTicket.equals(targetTicket) || suggestedTicket.getCost() < maxCost) {
+                    //Si la suggestion est parfaite, on termine la négo et on achète
                     (new Message(this, supplier, suggestedTicket, true)).send();
-                }
 
+                } else {
+                    //sinon annonce qu'on augmente notre prix
+                    targetTicket.setCost(targetTicket.getCost() +
+                            PRICE_AUGMENTATION_COEF * (suggestedTicket.getCost() - targetTicket.getCost())
+                    );
+                    negociation.sendNewPropositionFromNegToSup();
+                }
             }
 
             try {
@@ -54,8 +61,5 @@ public class Negociator extends Agent {
                 e.printStackTrace();
             }
         }
-    };
-
-
-
+    }
 }
