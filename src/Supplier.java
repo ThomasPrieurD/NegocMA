@@ -4,14 +4,12 @@ import java.util.List;
 public class Supplier extends Agent {
 
     private List<Ticket> tickets;
-    private List<Negociator> negociators;
-    private Negociator negociator; //todo remove ??
+    private Negociator negociator;
     private Negociation negociation;
 
     public Supplier(String id, List<Ticket> tickets) {
         super(id);
         this.tickets = tickets;
-        this.negociators = new ArrayList<>();
     }
 
     public void run(){
@@ -37,11 +35,16 @@ public class Supplier extends Agent {
                 }
 
                 if(msg.isCommercialPurchase()) {
-                    //todo : vérifier que le ticket est toujours dispo et le vendre
+
                     if(msg.getTicket().isSold()) {
-                        //retourner erreur
+
+                        System.out.println("IMPOSSIBLE DE VENDRE LE TICKET => IL EST DEJA VENDU !");
+
                     } else {
-                        System.out.println(msg.getTicket().toString() + " IS SOLD at " + msg.getTicket().getCost());
+
+                        System.out.println(msg.getTicket().toString()
+                                + " IS SOLD at " + msg.getTicket().getCost());
+
                         msg.getTicket().sold();
                         (new Message(this, negociator, msg.getTicket(), true)).send();
                         break;
@@ -109,14 +112,11 @@ public class Supplier extends Agent {
         return diff;
     }
 
+    /***
+     * Get the negociation to focus on
+     * @param n
+     */
     public void startNegociation(Negociation n) {
         negociation = n;
     }
-
-    /**********************************
-     *
-     * PRIVATES
-     *
-     ******************/
-
 }

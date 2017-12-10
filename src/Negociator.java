@@ -9,7 +9,6 @@ public class Negociator extends Agent {
 
     private List<Supplier> suppliers;
     private HashMap<Supplier, Negociation> negociations;
-    //private Supplier supplier;
     private Ticket targetTicket;
     private double maxCost;
 
@@ -67,6 +66,7 @@ public class Negociator extends Agent {
                     //Si la suggestion est parfaite, on termine la négo avec les autres et on achète
                     System.out.println(getIdAgent() + " ACCEPT THE PROPOSITION : " + suggestedTicket.toString()
                             + " => " + suggestedTicket.getCost() );
+
                     stopAllNegociationsExcept(supplier);
                     (new Message(this, supplier, suggestedTicket, true)).send();
 
@@ -78,11 +78,13 @@ public class Negociator extends Agent {
                     currentNegociation.sendNewPropositionFromNegToSup();
                 }
             }
-
             sleep();
         }
     }
 
+    /***
+     * Make the thread wait for a moment
+     */
     public void sleep() {
         try {
             sleep(1);

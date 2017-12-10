@@ -42,10 +42,6 @@ public class Ticket {
         return cost;
     }
 
-    public void setCost(double newCost) {
-        cost = newCost;
-    }
-
     public String getCompany() {
         return company;
     }

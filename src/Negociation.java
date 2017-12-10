@@ -61,15 +61,18 @@ public class Negociation {
     public void addSuggestion(Ticket t) {
 
         if(t == null) {
+            //Si le billet n'est pas précisé, cela signifie que le fournisseur refuse de proposer plus de billets
             Message m = (new Message(supplier, negociator, t, false));
             m.refuseToContinue();
             m.send();
 
         } else {
+
             suggestedTickets.add(t);
             nbSuggestions++;
             (new Message(supplier, negociator, t, false)).send();
         }
+
         System.out.println(supplier.getIdAgent() +
                 " to " + negociator.getIdAgent() + " : " + t.toString() +
                 " => " + t.getCost() + " € " +
@@ -89,7 +92,6 @@ public class Negociation {
             System.out.println("------------------------------------------------------------------");
 
             supplier.stop();
-
             processing = false;
         }
     }
@@ -98,10 +100,12 @@ public class Negociation {
      * Send a new desire to the supplier
      */
     public void sendNewPropositionFromNegToSup() {
+
         System.out.println(negociator.getIdAgent() +
                 " to " + supplier.getIdAgent() + " : " + negociator.getTargetTicket().toString() +
                 " => " + getTargetPrice() + " € " +
                 " for purchasing ? " + false);
+
         Message m = new Message(negociator, supplier, negociator.getTargetTicket(), false);
         m.send();
         messageHistory.add(m);
