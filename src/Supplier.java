@@ -41,7 +41,7 @@ public class Supplier extends Agent {
                     if(msg.getTicket().isSold()) {
                         //retourner erreur
                     } else {
-                        System.out.println(msg.getTicket().toString() + " IS SOLD");
+                        System.out.println(msg.getTicket().toString() + " IS SOLD at " + msg.getTicket().getCost());
                         msg.getTicket().sold();
                         (new Message(this, negociator, msg.getTicket(), true)).send();
                         break;
@@ -105,7 +105,7 @@ public class Supplier extends Agent {
             diff ++;
         }
         //On propose toujours le ticket le plus cher en premier !
-        diff += (targetTicket.getCost() - t.getCost());
+        diff += (negociation.getTargetPrice() - t.getCost());
         return diff;
     }
 

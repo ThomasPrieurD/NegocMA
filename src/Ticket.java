@@ -53,8 +53,7 @@ public class Ticket {
     public String toString(){
         return "[ date: "+ travelDate +
                 " | from: " + departureLocation +
-                " | to: "+ arrivalLocation +
-                " | cost: " + cost + " ]";
+                " | to: "+ arrivalLocation + "]";
     }
 
     /***

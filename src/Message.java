@@ -40,12 +40,6 @@ public class Message {
     }
 
     public void send() {
-
-        if(! isRefusingToContinue) {
-            System.out.println(sender.getIdAgent() +
-                    " to " + receiver.getIdAgent() + " : " + ticket.toString() +
-                    " for purchasing ? " + isCommercialPurchase);
-        }
         receiver.sendMessage(this);
     }
 }

@@ -13,7 +13,10 @@ public class Negociation {
 
     private List<Message> messageHistory;
     private List<Ticket> suggestedTickets;
+
+    private double targetPrice;
     private int nbSuggestions;
+    private boolean processing;
 
     public Negociation(Negociator n, Supplier s) {
 
@@ -23,6 +26,9 @@ public class Negociation {
         negociator = n;
         supplier = s;
         nbSuggestions = 0;
+        processing = true;
+        targetPrice = n.getTargetTicket().getCost();
+
         messageHistory = new ArrayList<>();
         suggestedTickets = new ArrayList<>();
 
@@ -30,6 +36,18 @@ public class Negociation {
 
         supplier.startNegociation(this);
         supplier.start();
+    }
+
+    public double getTargetPrice() {
+        return targetPrice;
+    }
+
+    public void setTargetPrice(double targetPrice) {
+        this.targetPrice = targetPrice;
+    }
+
+    public boolean isProcessing() {
+        return processing;
     }
 
     public List<Ticket> getSuggestedTickets() {
@@ -52,22 +70,38 @@ public class Negociation {
             nbSuggestions++;
             (new Message(supplier, negociator, t, false)).send();
         }
+        System.out.println(supplier.getIdAgent() +
+                " to " + negociator.getIdAgent() + " : " + t.toString() +
+                " => " + t.getCost() + " € " +
+                " for purchasing ? " + false);
     }
 
     /***
      * Stop the negociation
      */
     public void stop() {
-        System.out.println("Negociation between "
-                + negociator.getIdAgent() + " and "
-                + supplier.getIdAgent() + " is over !");
-        System.out.println("------------------------------------------------------------------");
+
+        if(processing) {
+
+            System.out.println("Negociation between "
+                    + negociator.getIdAgent() + " and "
+                    + supplier.getIdAgent() + " is over !");
+            System.out.println("------------------------------------------------------------------");
+
+            supplier.stop();
+
+            processing = false;
+        }
     }
 
     /***
      * Send a new desire to the supplier
      */
     public void sendNewPropositionFromNegToSup() {
+        System.out.println(negociator.getIdAgent() +
+                " to " + supplier.getIdAgent() + " : " + negociator.getTargetTicket().toString() +
+                " => " + getTargetPrice() + " € " +
+                " for purchasing ? " + false);
         Message m = new Message(negociator, supplier, negociator.getTargetTicket(), false);
         m.send();
         messageHistory.add(m);
