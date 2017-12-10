@@ -71,12 +71,12 @@ public class Negociation {
             suggestedTickets.add(t);
             nbSuggestions++;
             (new Message(supplier, negociator, t, false)).send();
-        }
 
-        System.out.println(supplier.getIdAgent() +
-                " to " + negociator.getIdAgent() + " : " + t.toString() +
-                " => " + t.getCost() + " € " +
-                " for purchasing ? " + false);
+            System.out.println(supplier.getIdAgent() +
+                    " to " + negociator.getIdAgent() + " : " + t.toString() +
+                    " => " + t.getCost() + " € " +
+                    " for purchasing ? " + false);
+        }
     }
 
     /***
@@ -91,7 +91,6 @@ public class Negociation {
                     + supplier.getIdAgent() + " is over !");
             System.out.println("------------------------------------------------------------------");
 
-            supplier.stop();
             processing = false;
         }
     }

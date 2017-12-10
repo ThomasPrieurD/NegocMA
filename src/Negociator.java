@@ -34,26 +34,24 @@ public class Negociator extends Agent {
             negociations.put(s, new Negociation(this, s));
         }
 
-        while(true) {
+        while(negociationsAreProcessing()) {
 
             Message msg = null;
-            Supplier supplier = null;
 
             if (messages.size() > 0){
                 msg = messages.remove(0);
-                sleep();
-                supplier = (Supplier) msg.getSender();
             }
 
-            if (msg != null && negociations.get(supplier).isProcessing()){
+            if (msg != null && negociations.get(msg.getSender()).isProcessing()){
 
+                Supplier supplier = (Supplier) msg.getSender();
                 Ticket suggestedTicket = msg.getTicket();
                 Negociation currentNegociation = negociations.get(supplier);
 
                 if(msg.isRefusingToContinue() || currentNegociation.isRunningOutOfTime()) {
                     //stop the current negociation
                     currentNegociation.stop();
-                    break;
+                    continue;
                 }
 
                 if(msg.isCommercialPurchase()) {
@@ -105,5 +103,19 @@ public class Negociator extends Agent {
                 e.getValue().stop();
             }
         }
+    }
+
+    /***
+     * Check if there is at least one negociation still processing
+     * @return
+     */
+    private boolean negociationsAreProcessing() {
+        for(Map.Entry<Supplier, Negociation> e : negociations.entrySet()) {
+
+            if(e.getValue().isProcessing()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.List;
 
 public class Supplier extends Agent {
@@ -14,7 +13,7 @@ public class Supplier extends Agent {
 
     public void run(){
 
-        while(true){
+        while(negociation.isProcessing()){
 
             try {
                 sleep(1);
