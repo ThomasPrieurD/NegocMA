@@ -19,7 +19,7 @@ public class Main {
         Ticket t_GL_80_251217 = new Ticket(new Date(2017,12,25),"Grenoble", "Lyon",800,"Air France");
         Ticket t_GL_75_251217 = new Ticket(new Date(2017,12,25),"Grenoble", "Lyon",750,"Air France");
 
-        Ticket negociatorDesire =  new Ticket(new Date(2017,12,24),"Paris", "Montreal",550,"Swiss Airline");
+        Ticket negociatorDesire =  new Ticket(new Date(2017,12,24),"Montréal", "Lyon",150,"Swiss Airline");
 
         ticketList1.add(t_MG_45_241217);
         ticketList1.add(t_ML_70_241217);

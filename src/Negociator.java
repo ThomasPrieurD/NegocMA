@@ -10,12 +10,10 @@ public class Negociator extends Agent {
     private List<Supplier> suppliers;
     private HashMap<Supplier, Negociation> negociations;
     private Ticket targetTicket;
-    private double maxCost;
 
     public Negociator(String id, Ticket targetTicket, Supplier... supplier) {
         super(id);
         this.targetTicket = targetTicket;
-        this.maxCost = 1.1 * targetTicket.getCost();
         this.suppliers = new ArrayList<>();
         this.negociations = new HashMap<>();
 
@@ -60,7 +58,8 @@ public class Negociator extends Agent {
                     break;
                 }
 
-                if(suggestedTicket.equals(targetTicket) || suggestedTicket.getCost() < maxCost) {
+                if(suggestedTicket.equals(targetTicket)
+                        || suggestedTicket.getCost() < currentNegociation.getTargetPrice()) {
                     //Si la suggestion est parfaite, on termine la négo avec les autres et on achète
                     System.out.println(getIdAgent() + " ACCEPT THE PROPOSITION : " + suggestedTicket.toString()
                             + " => " + suggestedTicket.getCost() );
